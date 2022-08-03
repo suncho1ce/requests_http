@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 
 base_url = 'https://akabab.github.io/superhero-api/api/'
 all = base_url + 'all.json'
@@ -56,3 +57,21 @@ if __name__ == '__main__':
     token = ''
     uploader = YaUploader(token)
     result = uploader.upload(path_to_file)
+
+#Задание 3
+
+time_now = int(time.time()) - time.timezone #переходим в utc-0
+time_start = time_now - 172800 #вычитаем 2 суток
+tag_search = 'Python'
+
+api_url = 'https://api.stackexchange.com'
+search_questions_request = f'/2.3/search?fromdate={time_start}&todate={time_now}&order=desc&sort=creation&tagged={tag_search}&site=stackoverflow'
+
+response = requests.get(api_url + search_questions_request)
+all_found_questions = response.json()
+
+print('Осталось запросов на сегодня:', all_found_questions['quota_remaining'], '\n')
+
+print('Все вопросы за последние два дня, которые содержат тэг "Python":\n')
+for question_search in all_found_questions['items']:
+    print(question_search['title'].strip())
